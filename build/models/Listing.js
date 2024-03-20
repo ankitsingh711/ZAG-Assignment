@@ -7,5 +7,6 @@ const listingSchema = new mongoose_1.Schema({
     city: { type: String, required: true },
     address: { type: String, required: true },
     images: [{ type: String }],
+    reviews: [{ type: mongoose_1.Schema.Types.ObjectId, ref: 'Review' }]
 });
 exports.default = (0, mongoose_1.model)('Listing', listingSchema);

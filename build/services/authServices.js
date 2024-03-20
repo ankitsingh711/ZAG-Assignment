@@ -10,10 +10,18 @@ dotenv_1.default.config();
 const JWT_SECRET = process.env.JWT_SECRET_KEY || 'asasaeuiweHAsbkjYUWb32iuh3ba';
 class AuthService {
     static generateToken(user) {
-        return jsonwebtoken_1.default.sign({ id: user.id, role: user.role }, JWT_SECRET, { expiresIn: '1d' });
+        const { username, role } = user;
+        return jsonwebtoken_1.default.sign({ username, role }, JWT_SECRET, { expiresIn: '1d' });
     }
     static verifyToken(token) {
-        return jsonwebtoken_1.default.verify(token, JWT_SECRET);
+        try {
+            const decodedToken = jsonwebtoken_1.default.verify(token, JWT_SECRET);
+            return { username: decodedToken.username, role: decodedToken.role };
+        }
+        catch (error) {
+            console.error('Token verification error:', error);
+            throw new Error('Invalid token');
+        }
     }
 }
 exports.AuthService = AuthService;

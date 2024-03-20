@@ -6,6 +6,7 @@ interface Listing extends Document {
   city: string;
   address: string;
   images: string[];
+  reviews?: Schema.Types.ObjectId[];
 }
 
 const listingSchema = new Schema({
@@ -14,6 +15,7 @@ const listingSchema = new Schema({
   city: { type: String, required: true },
   address: { type: String, required: true },
   images: [{ type: String }],
+  reviews: [{ type: Schema.Types.ObjectId, ref: 'Review' }]
 });
 
 export default model<Listing>('Listing', listingSchema);

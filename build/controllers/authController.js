@@ -18,7 +18,8 @@ class AuthController {
             if (!user || !(await bcrypt_1.default.compare(password, user.password))) {
                 return res.status(401).json({ message: "Invalid username or password" });
             }
-            const token = authServices_1.AuthService.generateToken(username);
+            req.body.role = user.role;
+            const token = authServices_1.AuthService.generateToken(req.body);
             // Send token as response
             res.send({ msg: 'Logged In !', token });
         }
@@ -37,7 +38,7 @@ class AuthController {
             const hashedPassword = await bcrypt_1.default.hash(password, SALT_ROUNDS);
             const newUser = new User_1.default({ username, password: hashedPassword, role });
             await newUser.save();
-            const token = authServices_1.AuthService.generateToken(username);
+            const token = authServices_1.AuthService.generateToken(req.body);
             res.send({ msg: "User registered successfully !", token });
         }
         catch (error) {

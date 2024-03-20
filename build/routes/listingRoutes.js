@@ -5,10 +5,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const listingController_1 = __importDefault(require("../controllers/listingController"));
-const listingMiddleware_1 = __importDefault(require("../middleware/listingMiddleware"));
+const accessMiddleware_1 = require("../middleware/accessMiddleware");
 const router = express_1.default.Router();
-router.get('/', listingMiddleware_1.default, listingController_1.default.getAllListings);
-router.post('/', listingMiddleware_1.default, listingController_1.default.createListing);
-router.put('/:id', listingMiddleware_1.default, listingController_1.default.updateListing);
-router.delete('/:id', listingMiddleware_1.default, listingController_1.default.deleteListing);
+router.get("/", accessMiddleware_1.listingAccessMiddleware, listingController_1.default.getAllListings);
+router.post("/", accessMiddleware_1.listingAccessMiddleware, listingController_1.default.createListing);
+router.put("/:id", accessMiddleware_1.listingAccessMiddleware, listingController_1.default.updateListing);
+router.delete("/:id", accessMiddleware_1.listingAccessMiddleware, listingController_1.default.deleteListing);
 exports.default = router;
