@@ -1,45 +1,26 @@
-import logger from '../logger';
-import mongoose, { Connection } from 'mongoose';
+import mongoose, { ConnectOptions } from 'mongoose';
 
-class DbService {
-  private static instance: DbService;
-  private connection: Connection | null = null;
+class Database {
+    private readonly URI: string;
 
-  private constructor() {}
-
-  public static getInstance(): DbService {
-    if (!DbService.instance) {
-      DbService.instance = new DbService();
+    constructor(uri: string) {
+        this.URI = uri;
     }
-    return DbService.instance;
-  }
 
-  public async connect(url: string): Promise<void> {
-    try {
-      this.connection = await mongoose.createConnection(url);
-      logger.info('Connected to MongoDB');
-    } catch (error) {
-      console.error('Error connecting to MongoDB:', error);
-      throw error;
+    public async connect(): Promise<void> {
+        try {
+            await mongoose.connect(this.URI, {
+                useNewUrlParser: true,
+                useUnifiedTopology: true,
+                useCreateIndex: true,
+                useFindAndModify: false
+            } as ConnectOptions );
+            console.log('Connected to database');
+        } catch (error) {
+            console.error('Failed to connect to database', error);
+            process.exit(1);
+        }
     }
-  }
-
-  public getConnection(): Connection {
-    if (!this.connection) {
-      throw new Error('Database is not connected');
-    }
-    return this.connection;
-  }
-
-  public async disconnect(): Promise<void> {
-    try {
-      await this.connection?.close();
-      console.log('Disconnected from MongoDB');
-    } catch (error) {
-      console.error('Error disconnecting from MongoDB:', error);
-      throw error;
-    }
-  }
 }
 
-export default DbService;
+export default Database;

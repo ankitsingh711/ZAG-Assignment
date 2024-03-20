@@ -1,9 +1,14 @@
-import jwt from 'jsonwebtoken';
+import jwt from "jsonwebtoken";
+import User from "../models/User";
 
-export function generateToken(payload: any): string {
-    return jwt.sign(payload, 'your-secret-key', { expiresIn: '1h' });
-}
+const JWT_SECRET = process.env.JWT_SECRET || "default_secret";
 
-export function verifyToken(token: string): any {
-    return jwt.verify(token, 'your-secret-key');
-}
+const generateToken = (username: string) => {
+  return jwt.sign({ username }, JWT_SECRET, { expiresIn: "1h" });
+};
+
+const verifyToken = (token: string) => {
+  return jwt.verify(token, JWT_SECRET);
+};
+
+export default { generateToken, verifyToken };
