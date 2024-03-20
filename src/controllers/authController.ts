@@ -18,8 +18,8 @@ class AuthController {
       if (!user || !(await bcrypt.compare(password, user.password))) {
         return res.status(401).json({ message: "Invalid username or password" });
       }
-
-      const token = AuthService.generateToken(username);
+      req.body.role = user.role;
+      const token = AuthService.generateToken(req.body);
 
       // Send token as response
       res.send({msg: 'Logged In !' ,token });
@@ -42,7 +42,7 @@ class AuthController {
       const newUser = new User({ username, password: hashedPassword, role });
       await newUser.save();
 
-      const token = AuthService.generateToken(username);
+      const token = AuthService.generateToken(req.body);
 
       res.send({ msg: "User registered successfully !", token });
     } catch (error) {

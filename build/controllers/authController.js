@@ -3,23 +3,29 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const jwtUtils_1 = __importDefault(require("../utils/jwtUtils"));
 const User_1 = __importDefault(require("../models/User"));
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const index_1 = __importDefault(require("../logger/index"));
-const dotenv_1 = require("dotenv");
-(0, dotenv_1.configDotenv)();
-const SALT_ROUNDS = process.env.SALT_ROUNDS || 10;
+const dotenv_1 = __importDefault(require("dotenv"));
+const authServices_1 = require("../services/authServices");
+dotenv_1.default.config();
+const SALT_ROUNDS = parseInt(process.env.SALT_ROUNDS || '10');
 class AuthController {
     async login(req, res) {
         const { username, password } = req.body;
-        const user = await User_1.default.findOne({ username });
-        if (!user || !(await bcrypt_1.default.compare(password, user.password))) {
-            return res.status(401).json({ message: "Invalid username or password" });
+        try {
+            const user = await User_1.default.findOne({ username });
+            if (!user || !(await bcrypt_1.default.compare(password, user.password))) {
+                return res.status(401).json({ message: "Invalid username or password" });
+            }
+            const token = authServices_1.AuthService.generateToken(username);
+            // Send token as response
+            res.send({ msg: 'Logged In !', token });
         }
-        const token = jwtUtils_1.default.generateToken(username);
-        // Send token as response
-        res.send({ token });
+        catch (error) {
+            index_1.default.error(error);
+            res.status(500).json({ message: "Internal Server Error", error });
+        }
     }
     async register(req, res) {
         try {
@@ -31,11 +37,11 @@ class AuthController {
             const hashedPassword = await bcrypt_1.default.hash(password, SALT_ROUNDS);
             const newUser = new User_1.default({ username, password: hashedPassword, role });
             await newUser.save();
-            const token = jwtUtils_1.default.generateToken(username);
+            const token = authServices_1.AuthService.generateToken(username);
             res.send({ msg: "User registered successfully !", token });
         }
         catch (error) {
-            index_1.default.info(error);
+            index_1.default.error(error);
             res.status(500).json({ message: "Internal Server Error", error });
         }
     }

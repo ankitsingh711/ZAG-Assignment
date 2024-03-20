@@ -1,9 +1,6 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-const jwtUtils_1 = __importDefault(require("../utils/jwtUtils"));
+const authServices_1 = require("../services/authServices");
 const authMiddleware = (req, res, next) => {
     var _a;
     const token = (_a = req.headers.authorization) === null || _a === void 0 ? void 0 : _a.split(' ')[1];
@@ -11,8 +8,9 @@ const authMiddleware = (req, res, next) => {
         return res.status(401).json({ message: 'Unauthorized: Missing token' });
     }
     try {
-        const decoded = jwtUtils_1.default.verifyToken(token);
+        const decoded = authServices_1.AuthService.verifyToken(token);
         req.user = decoded;
+        req.role = decoded.role;
         next();
     }
     catch (error) {
