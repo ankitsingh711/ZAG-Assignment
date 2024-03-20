@@ -1,0 +1,4 @@
+{"level":"error"}
+{"level":"error"}
+{"level":"error"}
+{"_message":"User validation failed","errors":{"role":{"kind":"enum","message":"`Adm` is not a valid enum value for path `role`.","name":"ValidatorError","path":"role","properties":{"enumValues":["BusinessOwner","User","Admin"],"message":"`Adm` is not a valid enum value for path `role`.","path":"role","type":"enum","value":"Adm"},"value":"Adm"}},"level":"error","message":"User validation failed: role: `Adm` is not a valid enum value for path `role`.","name":"ValidationError"}

@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import jwtUtils from '../utils/jwtUtils';
+import { AuthService } from '../services/authServices';
 
 const authMiddleware = (req: Request, res: Response, next: NextFunction) => {
   const token = req.headers.authorization?.split(' ')[1];
@@ -8,8 +8,9 @@ const authMiddleware = (req: Request, res: Response, next: NextFunction) => {
   }
 
   try {
-    const decoded = jwtUtils.verifyToken(token);
+    const decoded = AuthService.verifyToken(token);
     req.user = decoded;
+    req.role = decoded.role;
     next();
   } catch (error) {
     return res.status(403).json({ message: 'Forbidden: Invalid token' });

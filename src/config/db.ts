@@ -11,7 +11,6 @@ class Database {
         try {
             await mongoose.connect(this.URI, {
                 useNewUrlParser: true,
-                useUnifiedTopology: true,
                 useCreateIndex: true,
                 useFindAndModify: false
             } as ConnectOptions );

@@ -4,7 +4,8 @@ import dotenv from "dotenv";
 import authRoutes from "./routes/authRoutes";
 import listingRoutes from "./routes/listingRoutes";
 import reviewRoutes from "./routes/reviewRoutes";
-import authMiddleware from "./middleware/authMiddleware";
+import authMiddleware from './middleware/authMiddleware';
+import logger from "./logger";
 
 dotenv.config();
 
@@ -17,17 +18,15 @@ app.use(express.json());
 
 // Routes
 app.use("/auth", authRoutes);
-app.use("/listings", authMiddleware, listingRoutes);
+app.use("/listings",authMiddleware, listingRoutes);
 app.use("/reviews", authMiddleware, reviewRoutes);
 
 // Connect to MongoDB
 mongoose
   .connect(MONGODB_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
   } as ConnectOptions)
   .then(() => {
-    console.log("Connected to MongoDB");
-    app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+    logger.info("Connected to MongoDB");
+    app.listen(PORT, () => logger.info(`Server running on port ${PORT}`));
   })
   .catch((error) => console.error("MongoDB connection error:", error));

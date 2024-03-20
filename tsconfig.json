@@ -6,10 +6,12 @@
     "strict": true,
     "esModuleInterop": true,
     "baseUrl": "./src",
+    "skipLibCheck": true,
     "paths": {
       "@/*": ["*"]
     }
   },
   "include": ["src/**/*.ts", "express.d.ts"],
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules"],
+  "files":["types.d.ts"]
 }
