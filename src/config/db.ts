@@ -1,3 +1,4 @@
+import logger from '../logger';
 import mongoose, { Connection } from 'mongoose';
 
 class DbService {
@@ -15,8 +16,8 @@ class DbService {
 
   public async connect(url: string): Promise<void> {
     try {
-      this.connection = await mongoose.connect(url, { useNewUrlParser: true, useUnifiedTopology: true });
-      console.log('Connected to MongoDB');
+      this.connection = await mongoose.createConnection(url);
+      logger.info('Connected to MongoDB');
     } catch (error) {
       console.error('Error connecting to MongoDB:', error);
       throw error;
@@ -32,7 +33,7 @@ class DbService {
 
   public async disconnect(): Promise<void> {
     try {
-      await mongoose.disconnect();
+      await this.connection?.close();
       console.log('Disconnected from MongoDB');
     } catch (error) {
       console.error('Error disconnecting from MongoDB:', error);
